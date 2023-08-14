@@ -33,6 +33,11 @@ app.get('/list/:id', (req, res) => {
 app.post('/add-list', (req, res) => {
   let title = req.body.title;
 
+  if (title == '') {
+    res.redirect('/');
+    return;
+  }
+
   db.run("INSERT INTO lists (title) VALUES (?)", [title], (err) => {
     if (err) throw err;
     res.redirect('/');
@@ -54,6 +59,11 @@ app.get('/remove-list/:id', (req, res) => {
 app.post('/list/:id/add-item', (req, res) => {
   let content = req.body.content;
   let listId = req.params.id;
+
+  if (content == '') {
+    res.redirect(`/list/${listId}`);
+    return;
+  }
 
   db.run("INSERT INTO items (list_id, content) VALUES (?, ?)", [listId, content], (err) => {
     if (err) throw err;

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Lists</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>All Lists</h1>
+    <ul class="list-group">
+      <% lists.forEach(list=> { %>
+        <li class="list-item">
+          <a href="/list/<%= list.id %>">
+            <%= list.title %>
+          </a>
+          <a class="remove-btn" href="/remove-list/<%= list.id %>">remove list</a>
+        </li>
+        <% }); %>
+    </ul>
+    <form action="/add-list" method="POST">
+      <input type="text" name="title" placeholder="New list title">
+      <button type="submit" class="btn">Create New List</button>
+    </form>
+  </div>
+</body>
+</html>

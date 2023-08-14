@@ -22,7 +22,24 @@
     <form action="/list/<%= listId %>/add-item" method="POST">
       <input type="text" name="content" placeholder="New item">
       <button type="submit" class="btn">Add Item</button>
+      <button id="themeToggle" class="btn">Dark/Light</button>
     </form>
   </div>
 </body>
+
+<script>
+  const themeToggle = document.getElementById('themeToggle');
+  const currentTheme = localStorage.getItem('theme') || 'light';
+
+  document.documentElement.setAttribute('data-theme', currentTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
+</script>
+
 </html>

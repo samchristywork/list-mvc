@@ -59,3 +59,52 @@ input[type="text"] {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+
+[data-theme="dark"] {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .container {
+    background-color: #1e1e1e;
+}
+
+[data-theme="dark"] .list-item {
+    border-bottom-color: #333;
+}
+
+[data-theme="dark"] .btn {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+[data-theme="dark"] .btn:hover {
+    background-color: #e0e0e0;
+}
+
+[data-theme="dark"] .remove-btn {
+    color: #ff4b5c;
+}
+
+[data-theme="dark"] input[type="text"] {
+    background-color: #333;
+    color: #ffffff;
+    border-color: #555;
+}
+
+[data-theme="dark"] h1 {
+    color: #ffffff;
+}
+
+[data-theme="dark"] body {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+[data-theme="dark"] a {
+    color: #ffffff;
+}
+
+[data-theme="dark"] a:hover {
+    color: #ffffff;
+}

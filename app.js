@@ -4,7 +4,10 @@ var morgan = require('morgan');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 
+app.set('view engine', 'ejs');
+
 app.use(morgan('dev'));
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = new sqlite3.Database('./db/lists.db');

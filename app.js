@@ -21,6 +21,56 @@ app.get('/', (_req, res) => {
   });
 });
 
+app.get('/list/:id', (req, res) => {
+  let listId = req.params.id;
+
+  db.all("SELECT * FROM items WHERE list_id = ? and show = 1", [listId], (err, rows) => {
+    if (err) throw err;
+    res.render('list', { items: rows, listId: listId });
+  });
+});
+
+app.post('/add-list', (req, res) => {
+  let title = req.body.title;
+
+  db.run("INSERT INTO lists (title) VALUES (?)", [title], (err) => {
+    if (err) throw err;
+    res.redirect('/');
+  });
+});
+
+app.get('/remove-list/:id', (req, res) => {
+  let listId = req.params.id;
+
+  db.run("UPDATE lists SET show = 0 WHERE id = ?", [listId], (err) => {
+    if (err) throw err;
+    db.run("UPDATE items SET show = 0 WHERE list_id = ?", [listId], (err) => {
+      if (err) throw err;
+      res.redirect('/');
+    });
+  });
+});
+
+app.post('/list/:id/add-item', (req, res) => {
+  let content = req.body.content;
+  let listId = req.params.id;
+
+  db.run("INSERT INTO items (list_id, content) VALUES (?, ?)", [listId, content], (err) => {
+    if (err) throw err;
+    res.redirect(`/list/${listId}`);
+  });
+});
+
+app.get('/list/:id/delete-item/:itemId', (req, res) => {
+  let listId = req.params.id;
+  let itemId = req.params.itemId;
+
+  db.run("UPDATE items SET show = 0 WHERE id = ?", [itemId], (err) => {
+    if (err) throw err;
+    res.redirect(`/list/${listId}`);
+  });
+});
+
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000/');
 });

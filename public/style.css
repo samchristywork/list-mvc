@@ -108,3 +108,7 @@ input[type="text"] {
 [data-theme="dark"] a:hover {
     color: #ffffff;
 }
+
+.edit-description {
+  color: grey;
+}

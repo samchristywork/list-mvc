@@ -10,7 +10,14 @@
 
 <body>
   <div class="container">
-    <h1>List Items</h1>
+    <a href="/list-mvc/">Home</a>
+    <h1>
+      <%= listName %>
+    </h1>
+    <p onclick="editDescription('<%= listId %>')">
+      <%= listDescription %>
+        <span class="edit-description">[click to edit]</span>
+    </p>
     <ul class="list-group">
       <% items.forEach(item=> { %>
         <li class="list-item">
@@ -28,6 +35,27 @@
 </body>
 
 <script>
+  function editDescription(listId) {
+    const newDescription = prompt("Enter new description");
+    if (newDescription) {
+      fetch("/list-mvc/list/" + listId + "/edit-description", {
+        method: "POST",
+        body: JSON.stringify({
+          description: newDescription
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => {
+          if (res.ok) return res.json();
+        })
+        .then(data => {
+          window.location.reload(true);
+        });
+    }
+  }
+
   document.querySelector("input").focus();
 
   const themeToggle = document.getElementById('themeToggle');

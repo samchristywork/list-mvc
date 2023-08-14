@@ -13,9 +13,10 @@ app.set('view engine', 'ejs');
 app.use(morgan('dev'));
 app.use('/list-mvc', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const db = new sqlite3.Database('./db/lists.db');
-db.run("CREATE TABLE IF NOT EXISTS lists (id INTEGER PRIMARY KEY, title TEXT, show BOOLEAN DEFAULT 1, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+db.run("CREATE TABLE IF NOT EXISTS lists (id INTEGER PRIMARY KEY, title TEXT, description TEXT, show BOOLEAN DEFAULT 1, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
 db.run("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, list_id INTEGER, show BOOLEAN DEFAULT 1, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, content TEXT, FOREIGN KEY(list_id) REFERENCES lists(id))");
 
 app.get(root + '/', (_req, res) => {
@@ -27,10 +28,26 @@ app.get(root + '/', (_req, res) => {
 
 app.get(root + '/list/:id', (req, res) => {
   let listId = req.params.id;
+  let listName = '';
+  let listDescription = '';
 
-  db.all("SELECT * FROM items WHERE list_id = ? and show = 1", [listId], (err, rows) => {
+  db.get("SELECT * FROM lists WHERE id = ?", [listId], (err, row) => {
     if (err) throw err;
-    res.render('list', { items: rows, listId: listId });
+    listName = row.title;
+    listDescription = row.description;
+
+    if (listDescription == null) {
+      listDescription = '';
+    }
+
+    if (listDescription == '') {
+      listDescription = 'No description';
+    }
+
+    db.all("SELECT * FROM items WHERE list_id = ? and show = 1", [listId], (err, rows) => {
+      if (err) throw err;
+      res.render('list', { items: rows, listId: listId, listName: listName, listDescription: listDescription });
+    });
   });
 });
 
@@ -82,6 +99,16 @@ app.get(root + '/list/:id/delete-item/:itemId', (req, res) => {
   db.run("UPDATE items SET show = 0 WHERE id = ?", [itemId], (err) => {
     if (err) throw err;
     res.redirect(root + `/list/${listId}`);
+  });
+});
+
+app.post(root + '/list/:id/edit-description', (req, res) => {
+  let listId = req.params.id;
+  let newDescription = req.body.description;
+
+  db.run("UPDATE lists SET description = ? WHERE id = ?", [newDescription, listId], (err) => {
+    if (err) throw err;
+    res.json({ success: true });
   });
 });
 

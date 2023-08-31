@@ -84,6 +84,18 @@ app.get(root + '/remove-list/:id', (req, res) => {
   });
 });
 
+app.get(root + '/restore-list/:id', (req, res) => {
+  let listId = req.params.id;
+
+  db.run("UPDATE lists SET show = 1 WHERE id = ?", [listId], (err) => {
+    if (err) throw err;
+    db.run("UPDATE items SET show = 1 WHERE list_id = ?", [listId], (err) => {
+      if (err) throw err;
+      res.redirect(root + '/');
+    });
+  });
+});
+
 app.post(root + '/list/:id/add-item', (req, res) => {
   let content = req.body.content;
   let listId = req.params.id;

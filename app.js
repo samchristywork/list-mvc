@@ -26,6 +26,13 @@ app.get(root + '/', (_req, res) => {
   });
 });
 
+app.get(root + '/admin', (_req, res) => {
+  db.all("SELECT * FROM lists WHERE show = 0", (err, rows) => {
+    if (err) throw err;
+    res.render('admin', { lists: rows });
+  });
+});
+
 app.get(root + '/list/:id', (req, res) => {
   let listId = req.params.id;
   let listName = '';
